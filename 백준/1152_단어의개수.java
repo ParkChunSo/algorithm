@@ -7,13 +7,13 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         String s = scanner.nextLine();
 
-        String[] words = s.toLowerCase().split(" ");
-        ArrayList<String> countList = new ArrayList<>();
-        for(String word : words){
-            if(!countList.contains(word) && !word.equals(""))
-                countList.add(word);
+        String[] words = s.trim().split(" ");
+        int answer = words.length;
+        
+        for(int i = 0 ; i < words.length ; i++){
+            if(words[i].equals(""))
+                answer--;
         }
-
-        System.out.println(countList.size());
+        System.out.println(answer);
     }
 }
