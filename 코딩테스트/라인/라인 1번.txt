@@ -1,0 +1,68 @@
+import java.util.*;
+
+class Solution {
+    public int solution(String inputString) {
+        Stack<Character> smallBracket = new Stack<>();
+        Stack<Character> middleBracket = new Stack<>();
+        Stack<Character> largeBracket = new Stack<>();
+        Stack<Character> dimondBracket = new Stack<>();
+
+
+        int answer = 0;
+        boolean flag = false;
+        for(int i = 0  ; i < inputString.length() ; i++){
+            char c = inputString.charAt(i);
+            switch (c){
+                case '(':
+                    smallBracket.push(c);
+                    break;
+                case '{':
+                    middleBracket.push(c);
+                    break;
+                case '[':
+                    largeBracket.push(c);
+                    break;
+                case '<':
+                    dimondBracket.push(c);
+                    break;
+                case ')':
+                    if(!smallBracket.isEmpty()) {
+                        smallBracket.pop();
+                        answer++;
+                    } else {
+                        flag = true;
+                    }
+                    break;
+                case '}':
+                    if(!middleBracket.isEmpty()) {
+                        middleBracket.pop();
+                        answer++;
+                    } else {
+                        flag = true;
+                    }
+                    break;
+                case ']':
+                    if(!largeBracket.isEmpty()) {
+                        largeBracket.pop();
+                        answer++;
+                    } else {
+                        flag = true;
+                    }
+                    break;
+                case '>':
+                    if(!dimondBracket.isEmpty()) {
+                        dimondBracket.pop();
+                        answer++;
+                    } else {
+                        flag = true;
+                    }
+                    break;
+            }
+            if(flag) {
+                answer = -1;
+                break;
+            }
+        }
+        return answer;
+    }
+}

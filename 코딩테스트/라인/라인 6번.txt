@@ -1,0 +1,67 @@
+import java.util.ArrayList;
+import java.util.List;
+
+class Solution {
+    public String[] solution(String[] directory, String[] command) {
+        String[] answer = {};
+        Tree tree = new Tree("/");
+        for(String tmp : directory)
+            tree.mkdir(tmp);
+
+        for(String order : command){
+            String[] arr = order.split(" ");
+
+            switch (arr[0]){
+                case "mkdir":
+                    tree.mkdir(arr[1]);
+                    break;
+                case "cp":
+                    tree.cp(arr[1], arr[2]);
+                    break;
+                case "rm":
+                    tree.rm(arr[1]);
+                    break;
+            }
+        }
+        
+        return answer;
+    }
+    public class Tree{
+        Node root;
+        Tree(String data){
+            this.root = new Node(null, data);
+        }
+        public void mkdir(String path){
+            String[] split = path.split("/");
+            
+            int idx;
+            for(String tmp : split){
+
+            }
+        }
+
+        public void rm(String path){
+
+        }
+        public void cp(String source, String destination){
+
+        }
+
+    }
+
+    public class Node{
+        Node parent;
+        String data;
+        List<String> childs = new ArrayList<>();
+
+        public Node(Node parent, String data){
+            this.parent = parent;
+            this.data = data;
+        }
+
+        @Override
+        public String toString() {
+            return parent.toString()+"/"+this.data;
+        }
+    }
+}

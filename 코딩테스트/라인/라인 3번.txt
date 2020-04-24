@@ -1,0 +1,57 @@
+class Solution {
+    char[] roadMap;
+    public int solution(String road, int n) {
+        this.roadMap = road.toCharArray();
+        if(n == 0)
+            return howLongRoad();
+
+        int answer = -1;
+        for(int i = 0 ; i < roadMap.length ; i++){
+            if(roadMap[i] == '0') {
+                roadMap[i] = '1';
+                answer = Math.max(answer, dp(i, n-1));
+                roadMap[i] = '0';
+
+            }
+        }
+        return answer;
+    }
+
+    public int dp(int idx, int cnt){
+        if(cnt == 0)
+            return howLongRoad();
+
+        boolean flag = false;
+        int maxVal = -1;
+        for(int i = idx+1 ; i < roadMap.length ; i++){
+            if(roadMap[i] == '0'){
+                flag = true;
+                roadMap[i] = '1';
+                maxVal = Math.max(maxVal, dp(i, cnt-1));
+                roadMap[i] = '0';
+            }
+        }
+
+        if(!flag)
+            return howLongRoad();
+
+        return maxVal;
+    }
+
+    public int howLongRoad(){
+        int maxVal = 0;
+        int tmp = 0;
+        for(int i = 0 ; i < roadMap.length ; i++){
+            if(roadMap[i] == '1'){
+                tmp++;
+            }else{
+                maxVal = Math.max(maxVal, tmp);
+                tmp = 0;
+            }
+        }
+        if(tmp != 0)
+            maxVal = Math.max(maxVal, tmp);
+
+        return maxVal;
+    }
+}

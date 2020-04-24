@@ -1,0 +1,40 @@
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+class Solution {
+    public String[][] solution(String[][] snapshots, String[][] transactions) {
+        Map<String, Integer> account = new HashMap<>();
+        for(String[] snapshot : snapshots)
+            account.put(snapshot[0], Integer.parseInt(snapshot[1]));
+        Set<Integer> transactionID = new TreeSet<>();
+        for(String[] transaction : transactions){
+            Integer id = Integer.parseInt(transaction[0]);
+            if(transactionID.contains(id))
+                continue;
+            transactionID.add(id);
+            Integer s = account.get(transaction[2]);
+            if(transaction[1].equals("SAVE")){
+                if(s == null){
+                    account.put(transaction[2], Integer.parseInt(transaction[3]));
+                }else{
+                    s += Integer.parseInt(transaction[3]);
+                    account.put(transaction[2], s);
+                }
+            }else{
+                s -= Integer.parseInt(transaction[3]);
+                account.put(transaction[2], s);
+            }
+        }
+
+        List<String> list = new ArrayList<>(account.keySet());
+        Collections.sort(list);
+        String[][] answer = new String[list.size()][2];
+        for(int i = 0 ; i < list.size() ; i++){
+            answer[i][0] = list.get(i);
+            answer[i][1] = String.valueOf(account.get(list.get(i)));
+        }
+
+        return answer;
+    }
+}

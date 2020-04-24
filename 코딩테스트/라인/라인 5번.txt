@@ -1,0 +1,56 @@
+import java.util.*;
+import java.util.stream.Collectors;
+
+class Solution {
+    class Document{
+        String doc;
+        int cnt;
+
+        public Document(String doc, int cnt) {
+            this.doc = doc;
+            this.cnt = cnt;
+        }
+
+        public String getDoc() {
+            return doc;
+        }
+
+        public int getCnt() {
+            return cnt;
+        }
+    }
+    public String[] solution(String[][] dataSource, String[] tags){
+        Map<String, List<String>> map = new HashMap<>();
+        for(String[] data : dataSource){
+            for(int i = 1 ; i < data.length ; i++){
+                map.computeIfAbsent(data[i], k -> new ArrayList<>());
+                map.get(data[i]).add(data[0]);
+            }
+        }
+        Map<String, Integer> searchMap = new HashMap<>();
+        for(String tag : tags){
+            List<String> docs = map.get(tag);
+            for(String doc : docs){
+                searchMap.merge(doc, 1, (a, b) -> a + b);
+            }
+        }
+
+        List<Document> list = new ArrayList<>();
+        for (String next : searchMap.keySet()) {
+            list.add(new Document(next, searchMap.get(next)));
+        }
+        List<String> documents = list.stream()
+                .sorted(Comparator.comparing(Document::getCnt)
+                        .reversed()
+                        .thenComparing(Document::getDoc))
+                .limit(10)
+                .map(Document::getDoc)
+                .collect(Collectors.toList());
+
+        String[] result = new String[documents.size() > 10 ? 10 : documents.size()];
+        for(int i = 0 ; i < result.length ; i++)
+            result[i] = documents.get(i);
+
+        return result;
+    }
+}
