@@ -1,0 +1,35 @@
+import java.util.*;
+
+public class Main {
+    static int k;
+    static List<Double> list = new ArrayList<>();
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String[] tmp = sc.nextLine().split(" ");
+        int n = Integer.parseInt(tmp[0]);
+        k = Integer.parseInt(tmp[1]);
+
+        for(int i = 0 ; i < n ; i++){
+            list.add(sc.nextDouble());
+        }
+        list.sort(Double::compareTo);
+
+        System.out.println(findOptimalVal(list.get(0), 0, list.get(0)));
+    }
+
+    public static double findOptimalVal(double max, double min, double val){
+        int answer = 0;
+        for (Double tmp : list) {
+            answer += tmp / val;
+        }
+        if(answer > k){
+            double newVal = val + Math.round((((max - val) / 2)*100)/100);
+            return findOptimalVal(max, val, newVal);
+        }else if(answer < k){
+            double newVal = val - Math.round((((val-min) / 2)*100)/100);
+            return findOptimalVal(max, val, newVal);
+        }else{
+            return val;
+        }
+    }
+}

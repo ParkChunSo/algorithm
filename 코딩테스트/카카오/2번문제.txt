@@ -1,0 +1,71 @@
+import java.util.*;
+
+public class Main {
+    static class PlayInfo {
+        String name;
+        int winVal;
+        int setVal;
+
+        public PlayInfo(String name) {
+            this.name = name;
+            this.winVal = 0;
+            this.setVal = 0;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getWinVal() {
+            return winVal;
+        }
+
+        public int getSetVal() {
+            return setVal;
+        }
+
+        @Override
+        public String toString() {
+            return name + " " + winVal + " " + setVal;
+        }
+    }
+
+    static Map<String, PlayInfo> map = new HashMap<>();
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = Integer.parseInt(sc.nextLine());
+
+        int playCnt = n * (n - 1);
+        for (int i = 0; i < playCnt; i++) {
+            String[] s = sc.nextLine().split(" ");
+            setScore(s[0],Integer.parseInt(s[1]), s[2], Integer.parseInt(s[3]));
+        }
+
+        ArrayList<PlayInfo> list = new ArrayList<>(map.values());
+        list.sort(Comparator.comparing(PlayInfo::getWinVal)
+                .thenComparing(PlayInfo::getSetVal)
+                .reversed()
+                .thenComparing(PlayInfo::getName));
+
+        list.forEach(System.out::println);
+    }
+
+    public static void setScore(String t1_name, int t1_score, String t2_name, int t2_score) {
+        if(!map.containsKey(t1_name))
+            map.put(t1_name, new PlayInfo(t1_name));
+        if(!map.containsKey(t2_name))
+            map.put(t2_name, new PlayInfo(t2_name));
+
+        PlayInfo t1 = map.get(t1_name);
+        PlayInfo t2 = map.get(t2_name);
+        if(t1_score > t2_score){
+            t1.winVal += 1;
+
+        }else{
+            t2.winVal += 1;
+        }
+        t1.setVal += t1_score - t2_score;
+        t2.setVal += t2_score - t1_score;
+    }
+}

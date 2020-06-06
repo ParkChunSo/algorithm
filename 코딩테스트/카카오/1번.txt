@@ -1,0 +1,26 @@
+import java.util.Scanner;
+
+public class Main {
+
+    static final String NUM_REGEX = ".*[0-9]+.*";
+    static final String SPECIAL_CHARACTERS_REGEX = ".*[!@#$%^&*(),.?\":{}|<>]+.*";
+    static final String LOWER_CHARACTERS_REGEX = ".*[a-z]+.*";
+    static final String UPPER_CHARACTERS_REGEX = ".*[A-Z]+.*";
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String s = sc.nextLine();
+        int answer = 0;
+        if(s.matches(NUM_REGEX))
+            answer++;
+        if(s.matches(SPECIAL_CHARACTERS_REGEX))
+            answer++;
+        if(s.matches(LOWER_CHARACTERS_REGEX))
+            answer++;
+        if(s.matches(UPPER_CHARACTERS_REGEX))
+            answer++;
+        if(s.length() >= 10)
+            answer++;
+
+        System.out.println("LEVEL"+answer);
+    }
+}
