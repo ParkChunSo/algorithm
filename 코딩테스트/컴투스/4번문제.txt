@@ -1,0 +1,52 @@
+import java.util.Set;
+import java.util.TreeSet;
+
+public class Main {
+    static final int UNKNOWN = 0;
+    static final int FREIND = 1;
+
+    static int[][] relation;
+    static Set<Integer> set = new TreeSet<>();
+
+    public static void main(String[] args) {
+        int n = 5;
+        int f = 4;
+        int[][] r = {
+                {1, 2},
+                {2, 3},
+                {2, 4},
+                {3, 5},
+        };
+        int a = 1;
+
+
+        relation = new int[n + 1][n + 1];
+        for (int[] arr : r) {
+            relation[arr[0]][arr[1]] = FREIND;
+            relation[arr[1]][arr[0]] = FREIND;
+        }
+
+        relation[a][a] = FREIND; //자기 자신과 간접 친구가 가능하기 떄문.
+        for (int x = 1; x <= n; x++) {
+            if (relation[a][x] == FREIND) {
+                findSecondHandFreinds(n, a, x);
+            }
+        }
+
+        for (Integer integer : set) {
+            System.out.print(integer + " ");
+        }
+    }
+
+    /**
+     * @param n    : 총 유저 수
+     * @param a    : 친구추천 기능을 요청하는 유저의 번호
+     * @param idx: a와 친구인 유저
+     */
+    public static void findSecondHandFreinds(int n, int a, int idx) {
+        for (int i = 1; i <= n; i++) {
+            if (relation[idx][i] == FREIND && relation[a][i] == UNKNOWN)
+                set.add(i);
+        }
+    }
+}

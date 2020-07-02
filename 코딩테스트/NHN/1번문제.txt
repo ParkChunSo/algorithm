@@ -1,0 +1,19 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String s = sc.nextLine();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 4; i <= s.length(); i += 4) {
+            sb.append(solution(s.substring(i - 4, i)));
+            if (i % 16 == 0 && i != s.length())
+                sb.append(":");
+        }
+        System.out.println(sb.toString());
+    }
+
+    public static String solution(String s) {
+        return Integer.toHexString(Integer.valueOf(s, 2));
+    }
+}

@@ -1,0 +1,60 @@
+import java.util.Scanner;
+
+public class Main {
+    static final int REST = 0;
+    static final int WORK = 1;
+    static final int HOSP = 2;
+    static final int MAX_WORK = 101;
+
+    static int N, M, D;
+    static int[] days;
+    static int[][] cache;
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        N = sc.nextInt();
+        M = sc.nextInt();
+        D = sc.nextInt();
+
+        days = new int[N];
+        cache = new int[D][N];
+        for (int i = 0; i < M; i++) {
+            days[sc.nextInt()] = HOSP;
+        }
+        int answer = solution(1, 0);
+        if (answer == MAX_WORK)
+            System.out.println(-1);
+        else
+            System.out.println(answer + 1);
+    }
+
+    /**
+     * 당일이 병원가는 날이 아닐 경우 운동을 하는 경우, 안하는 경우 중 최소 리턴
+     * 병원 가는 날일 경우 운동을 안하는 경우
+     * 병원 가는 날이며 쉰 날짜가 M과 같다면 최대값 반환.
+     *
+     * @param day:  몇일 쨰인지
+     * @param rest: 얼만큼 쉬었는지
+     * @return 최소 운동 횟수
+     */
+    public static int solution(int day, int rest) {
+        if (day == N - 1) {
+            if (rest == D)
+                return 1;
+            else
+                return 0;
+        }
+        if (rest == D)
+            return MAX_WORK;
+        if (cache[rest][day] != 0)
+            return cache[rest][day];
+
+        if (days[day] != HOSP) {
+            cache[rest][day] = Math.min(solution(day + 1, 0) + 1, solution(day + 1, rest + 1));
+        } else {
+            cache[rest][day] = solution(day + 1, rest + 1);
+        }
+
+        return cache[rest][day];
+    }
+}

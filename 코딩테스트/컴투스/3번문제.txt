@@ -1,0 +1,67 @@
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        int n = 4;
+        int[][] m = {
+                {4, 133},
+                {3, 790},
+                {2, 864},
+                {1, 123},
+        };
+
+        List<User> list = new ArrayList<>();
+        for (int[] arr : m) {
+            list.add(new User(arr[0], arr[1]));
+        }
+        list.sort(Comparator.comparing(User::getScore));
+        while (findMatching(list)) ;
+    }
+
+    public static boolean findMatching(List<User> list) {
+        // 더이상 매칭을 할 수 없을 경우
+        if (list.size() < 2)
+            return false;
+
+        int minVal = Integer.MAX_VALUE; // 점수 차이
+        int user1 = -1, user2 = -1; // 매칭을 이룰 두 선수
+        int idx = -1; // 매칭이 끝나고 삭제할 인덱스
+        for (int i = 1; i < list.size(); i++) {
+            int val = list.get(i).getScore() - list.get(i - 1).getScore();
+            if (val < minVal) {  //점수차이가 가장 적을 경우
+                minVal = val;
+                user1 = list.get(i).getId();
+                user2 = list.get(i - 1).getId();
+                idx = i;
+            }
+        }
+
+        if (user1 < user2)
+            System.out.println(user1 + " " + user2);
+        else
+            System.out.println(user2 + " " + user1);
+        list.remove(idx);
+        list.remove(idx - 1);
+        return true;
+    }
+
+    public static class User {
+        private int id;
+        private int score;
+
+        public User(int id, int score) {
+            this.id = id;
+            this.score = score;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public int getScore() {
+            return score;
+        }
+    }
+}
