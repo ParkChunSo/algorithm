@@ -1,0 +1,55 @@
+package com.company;
+
+import java.util.*;
+
+class Solution {
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[][] n = {{1, 2}, {2, 1}, {3, 3}, {4, 5}, {5, 6}, {7, 8}};
+        int answer = solution.solution(n);
+        System.out.println(answer);
+    }
+
+
+    public int solution(int[][] boxes) {
+        for (int i = 0; i < boxes.length; i++) {
+            if (boxes[i][0] == boxes[i][1])
+                continue;
+
+            for (int j = i + 1; j < boxes.length; j++) {
+                if(boxes[j][0] == boxes[j][1])
+                    continue;
+
+                if (boxes[i][0] == boxes[i][1])
+                    break;
+
+                if(boxes[i][0] == boxes[j][0]){
+                    int tmp = boxes[i][1];
+                    boxes[i][1] = boxes[j][0];
+                    boxes[j][0] = tmp;
+                }
+                if(boxes[i][0] == boxes[j][1]){
+                    int tmp = boxes[i][1];
+                    boxes[i][1] = boxes[j][1];
+                    boxes[j][1] = tmp;
+                }
+                if(boxes[i][1] == boxes[j][0]){
+                    int tmp = boxes[i][0];
+                    boxes[i][0] = boxes[j][0];
+                    boxes[j][0] = tmp;
+                }
+                if(boxes[i][1] == boxes[j][1]){
+                    int tmp = boxes[i][0];
+                    boxes[i][0] = boxes[j][1];
+                    boxes[j][1] = tmp;
+                }
+            }
+        }
+        int answer = 0;
+        for (int[] box : boxes) {
+            if(box[0] != box[1])
+                answer++;
+        }
+        return answer;
+    }
+}

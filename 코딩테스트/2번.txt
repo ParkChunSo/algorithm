@@ -1,0 +1,163 @@
+package com.company;
+
+import java.util.*;
+
+class Solution {
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String[] strings = {"ABCFG", "AC", "CDE", "ACDE", "CBFG", "ACDEH"};
+        int[] course = {2, 3, 4};
+        System.out.println(Arrays.toString(solution.solution(strings, course)));
+    }
+
+    static final String[] alpha = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"
+            , "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+    int max;
+    int[][] map = new int[26][26];
+    List<String> tmpAnswer = new ArrayList<>();
+    List<Integer> path = new ArrayList<>();
+
+    String[] orders;
+
+    public String[] solution(String[] orders, int[] course) {
+        this.orders = orders;
+        //init map
+        for (String s : orders) {
+            for (int i = 0; i < s.length(); i++) {
+                for (int j = i + 1; j < s.length(); j++) {
+                    if (i == j)
+                        continue;
+                    map[s.charAt(i) - 'A'][s.charAt(j) - 'A'] += 1;
+                    map[s.charAt(j) - 'A'][s.charAt(i) - 'A'] += 1;
+                }
+            }
+        }
+
+        List<String> result = new ArrayList<>();
+        for (int cnt : course) {
+            max = 0;
+            tmpAnswer = new ArrayList<>();
+            path = new ArrayList<>();
+            for (int i = 0; i < 26; i++) {
+                path.add(i);
+                dfs(i, cnt, 1, Integer.MAX_VALUE);
+                path.remove(path.size() - 1);
+            }
+            result.addAll(tmpAnswer);
+        }
+
+        result.sort(Comparator.naturalOrder());
+        String[] answer = new String[result.size()];
+
+        for (int i = 0; i < result.size(); i++) {
+            answer[i] = result.get(i);
+        }
+        return answer;
+    }
+
+    /**
+     * @param idx:    시작점
+     * @param cnt:    총 몇개의 단품을 코스로 묶을 것인지
+     * @param depth:  현재까지 몇개의 단품을 코스로 묶었는지
+     * @param minVal: 지금까지 묶인 단품이 함께 주문된 최소횟수
+     */
+    public void dfs(int idx, int cnt, int depth, int minVal) {
+//        if (cnt == depth) {
+//            if (minVal == 1) {
+//                return;
+//            } else if (minVal > max) {
+//                tmpAnswer = new ArrayList<>();
+//                max = minVal;
+//                tmpAnswer.add(listToString(path));
+//            } else if (minVal == max) {
+//                tmpAnswer.add(listToString(path));
+//            }
+//            return;
+//        }
+        if (cnt == depth) {
+            int result = findResult();
+            if (result == 1) {
+                return;
+            } else if (result > max) {
+                tmpAnswer = new ArrayList<>();
+                max = result;
+                tmpAnswer.add(listToString(path));
+            } else if (result == max) {
+                tmpAnswer.add(listToString(path));
+            }
+            return;
+        }
+
+        for (int i = idx + 1; i < 26; i++) {
+            if (!isLinked2(i)) {
+                continue;
+            }
+            int foundVal = findMinVal(i);
+            path.add(i);
+            dfs(i, cnt, depth + 1, Math.min(minVal, foundVal));
+            path.remove(path.size() - 1);
+        }
+    }
+
+    private boolean isLinked2(int i) {
+        String s = listToString(path) + alpha[i];
+        int cnt = 0;
+        for (String str : orders) {
+            for (int k = 0; k < s.length(); k++) {
+                if (str.indexOf(s.charAt(k)) != -1) {
+                    cnt++;
+                }
+            }
+            if (cnt == s.length()) {
+                return true;
+            }
+            cnt = 0;
+        }
+        return false;
+    }
+
+    private int findResult(){
+        String s = listToString(path);
+        int cnt = 0, answer = 0;
+        for (String str : orders) {
+            for (int k = 0; k < s.length(); k++) {
+                if (str.indexOf(s.charAt(k)) != -1) {
+                    cnt++;
+                }
+            }
+            if (cnt == s.length()) {
+                answer++;
+            }
+            cnt = 0;
+        }
+        return answer;
+    }
+
+    private boolean isLinked(int i) {
+        for (int p : path) {
+            if (map[p][i] == 0)
+                return false;
+        }
+        return true;
+    }
+
+    private int findMinVal(int i) {
+        int answer = Integer.MAX_VALUE;
+        for (int p : path) {
+            answer = Math.min(answer, map[i][p]);
+        }
+        return answer;
+    }
+
+    private String listToString(List<Integer> path) {
+        PriorityQueue<String> queue = new PriorityQueue<>();
+        for (Integer integer : path) {
+            queue.offer(alpha[integer]);
+        }
+        StringBuilder sb = new StringBuilder();
+        while (!queue.isEmpty()) {
+            sb.append(queue.poll());
+        }
+        return sb.toString();
+    }
+}

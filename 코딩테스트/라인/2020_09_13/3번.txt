@@ -1,0 +1,51 @@
+package com.company;
+
+import java.util.*;
+
+class Solution {
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        System.out.println(Arrays.toString(solution.solution(73425)));
+    }
+
+
+    public int[] solution(int n) {
+        return dfs(String.valueOf(n), 0);
+    }
+
+    public int[] dfs(String n, int c){
+        if(n.length() == 1){
+            return new int[]{c, Integer.parseInt(n)};
+        }
+        List<String> list = new ArrayList<>();
+        int max = Integer.MAX_VALUE;
+        for(int i = 0 ; i < n.length()-1 ; i++){
+            String substring1 = n.substring(0, i+1);
+            String substring2 = n.substring(i + 1);
+            if(substring2.charAt(0) == '0')
+                continue;
+
+            String sum = String.valueOf(Integer.parseInt(substring1)
+                    + Integer.parseInt(substring2));
+            if(sum.length() < max) {
+                max = sum.length();
+                list = new ArrayList<>();
+                list.add(sum);
+            }else if(sum.length() == max){
+                list.add(sum);
+            }
+        }
+
+        int[] answer = new int[2];
+        answer[0] = Integer.MAX_VALUE;
+        answer[1] = Integer.MAX_VALUE;
+        for(String s : list){
+            int[] dfs = dfs(s, c + 1);
+            if(answer[0] > dfs[0]){
+                answer[0] = dfs[0];
+                answer[1] = dfs[1];
+            }
+        }
+        return answer;
+    }
+}

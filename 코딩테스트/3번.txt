@@ -1,0 +1,160 @@
+package com.company;
+
+import java.util.*;
+
+class Solution {
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        System.out.println(Arrays.toString(solution.solution(new String[]{"java backend junior pizza 150", "python frontend senior chicken 210", "python frontend senior chicken 150", "cpp backend senior pizza 260", "java backend junior chicken 80", "python backend senior chicken 50"}
+                , new String[]{"java and backend and junior and pizza 100","python and frontend and senior and chicken 200","cpp and - and senior and pizza 250","- and backend and senior and - 150","- and - and - and chicken 100","- and - and - and - 150"})));
+//        System.out.println(solution.solution("...!@BaT#*..y.abcdefghijklm"));
+//        int an = solution.solution(1, new int[][]{{2, 3}, {5, 4}, {6, 3}, {7, 4}});
+//        System.out.println(an);
+
+    }
+
+    final String[][] arr = {{"cpp", "java", "python"}
+            , {"backend", "frontend"}
+            ,{"junior", "senior"}
+            ,{"chicken", "pizza"}};
+    Map<String, Map<String, Map<String, Map<String, Map<Integer, Integer>>>>> map;
+    List<String> tmpQuery = new ArrayList<>();
+
+    public int[] solution(String[] info, String[] query) {
+        initMap();
+        processInfo(info);
+        int[] answer = new int[query.length];
+        for (int i = 0; i < query.length; i++) {
+            tmpQuery = new ArrayList<>();
+            String[] s = query[i].split(" ");
+            String[] strings = {s[0], s[2], s[4], s[6], s[7]};
+            answer[i] = dfs(strings, 0);
+        }
+        return answer;
+    }
+
+    private int findCnt(String language, String position, String howLong, String food, String score ){
+        Set<Integer> scores = map.get(language).get(position).get(howLong).get(food).keySet();
+        int answer = 0, intScore = Integer.parseInt(score);
+        for (Integer i : scores) {
+            if(i >= intScore){
+                answer += map.get(language).get(position).get(howLong).get(food).get(i);
+            }
+        }
+        return answer;
+    }
+
+    private int dfs(String[] list, int idx) {
+        if (idx == list.length) {
+            return findCnt(tmpQuery.get(0), tmpQuery.get(1), tmpQuery.get(2), tmpQuery.get(3), tmpQuery.get(4));
+        }
+
+        int cnt = 0;
+        if(list[idx].equals("-")){
+            for(int i = 0 ; i < arr[idx].length ; i++){
+                tmpQuery.add(arr[idx][i]);
+                cnt += dfs(list, idx+1);
+                tmpQuery.remove(tmpQuery.size()-1);
+            }
+        }else{
+            tmpQuery.add(list[idx]);
+            cnt += dfs(list, idx+1);
+            tmpQuery.remove(tmpQuery.size()-1);
+        }
+        return cnt;
+    }
+
+    private void initMap() {
+        map = new HashMap<>();
+        map.put("cpp", new HashMap<>());
+        map.put("java", new HashMap<>());
+        map.put("python", new HashMap<>());
+
+
+        map.get("cpp").put("backend", new HashMap<>());
+        map.get("cpp").put("frontend", new HashMap<>());
+        map.get("java").put("backend", new HashMap<>());
+        map.get("java").put("frontend", new HashMap<>());
+        map.get("python").put("backend", new HashMap<>());
+        map.get("python").put("frontend", new HashMap<>());
+
+
+        map.get("cpp").get("backend").put("junior", new HashMap<>());
+        map.get("cpp").get("backend").put("senior", new HashMap<>());
+        map.get("cpp").get("frontend").put("junior", new HashMap<>());
+        map.get("cpp").get("frontend").put("senior", new HashMap<>());
+
+        map.get("java").get("backend").put("junior", new HashMap<>());
+        map.get("java").get("backend").put("senior", new HashMap<>());
+        map.get("java").get("frontend").put("junior", new HashMap<>());
+        map.get("java").get("frontend").put("senior", new HashMap<>());
+
+        map.get("python").get("backend").put("junior", new HashMap<>());
+        map.get("python").get("backend").put("senior", new HashMap<>());
+        map.get("python").get("frontend").put("junior", new HashMap<>());
+        map.get("python").get("frontend").put("senior", new HashMap<>());
+
+
+        map.get("cpp").get("backend").get("junior").put("pizza", new HashMap<>());
+        map.get("cpp").get("backend").get("junior").put("chicken", new HashMap<>());
+        map.get("cpp").get("backend").get("senior").put("pizza", new HashMap<>());
+        map.get("cpp").get("backend").get("senior").put("chicken", new HashMap<>());
+        map.get("cpp").get("frontend").get("junior").put("pizza", new HashMap<>());
+        map.get("cpp").get("frontend").get("junior").put("chicken", new HashMap<>());
+        map.get("cpp").get("frontend").get("senior").put("pizza", new HashMap<>());
+        map.get("cpp").get("frontend").get("senior").put("chicken", new HashMap<>());
+
+        map.get("java").get("backend").get("junior").put("pizza", new HashMap<>());
+        map.get("java").get("backend").get("junior").put("chicken", new HashMap<>());
+        map.get("java").get("backend").get("senior").put("pizza", new HashMap<>());
+        map.get("java").get("backend").get("senior").put("chicken", new HashMap<>());
+        map.get("java").get("frontend").get("junior").put("pizza", new HashMap<>());
+        map.get("java").get("frontend").get("junior").put("chicken", new HashMap<>());
+        map.get("java").get("frontend").get("senior").put("pizza", new HashMap<>());
+        map.get("java").get("frontend").get("senior").put("chicken", new HashMap<>());
+
+        map.get("python").get("backend").get("junior").put("pizza", new HashMap<>());
+        map.get("python").get("backend").get("junior").put("chicken", new HashMap<>());
+        map.get("python").get("backend").get("senior").put("pizza", new HashMap<>());
+        map.get("python").get("backend").get("senior").put("chicken", new HashMap<>());
+        map.get("python").get("frontend").get("junior").put("pizza", new HashMap<>());
+        map.get("python").get("frontend").get("junior").put("chicken", new HashMap<>());
+        map.get("python").get("frontend").get("senior").put("pizza", new HashMap<>());
+        map.get("python").get("frontend").get("senior").put("chicken", new HashMap<>());
+    }
+
+    private void processInfo(String[] infos) {
+        for (String i : infos) {
+            StringTokenizer st = new StringTokenizer(i);
+
+            String language = st.nextToken();
+            String position = st.nextToken();
+            String howLong = st.nextToken();
+            String food = st.nextToken();
+            int point = Integer.parseInt(st.nextToken());
+            if (map.get(language)
+                    .get(position)
+                    .get(howLong)
+                    .get(food)
+                    .get(point) == null) {
+                map.get(language)
+                        .get(position)
+                        .get(howLong)
+                        .get(food)
+                        .put(point, 1);
+            } else {
+                int cnt = map.get(language)
+                        .get(position)
+                        .get(howLong)
+                        .get(food)
+                        .get(point);
+                map.get(language)
+                        .get(position)
+                        .get(howLong)
+                        .get(food)
+                        .put(point, cnt + 1);
+            }
+        }
+    }
+
+}

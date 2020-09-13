@@ -1,0 +1,75 @@
+package com.company;
+
+import java.util.*;
+
+class Solution {
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] ball = {11, 2, 9, 13, 24};
+        int[] order = {9, 2, 13, 24, 11};
+        System.out.println(Arrays.toString(solution.solution(ball, order)));
+    }
+
+
+    public int[] solution(int[] ball, int[] order) {
+        CustomList list = new CustomList(ball);
+        List<Integer> answer = new ArrayList<>();
+        List<Integer> waitingOrder = new LinkedList<>();
+        for(int o : order){
+            if(!waitingOrder.isEmpty()){
+                for (int i = 0 ; i < waitingOrder.size(); i++) {
+                    if(list.peek(waitingOrder.get(i))) {
+                        answer.add(list.pop(waitingOrder.get(i)));
+                        waitingOrder.remove(i);
+                        i=-1;
+                    }
+                }
+            }
+
+            if(list.peek(o))
+                answer.add(list.pop(o));
+            else
+                waitingOrder.add(o);
+        }
+        for(int i = 0 ; i < waitingOrder.size() ; i++){
+            if(list.peek(waitingOrder.get(i))) {
+                answer.add(list.pop(waitingOrder.get(i)));
+                waitingOrder.remove(i);
+                i = -1;
+            }
+        }
+
+        int[] a = new int[answer.size()];
+        for(int i = 0 ; i < answer.size() ; i++){
+            a[i] = answer.get(i);
+        }
+        return a;
+    }
+
+    public static class CustomList{
+        List<Integer> list;
+
+        public CustomList(int[] ball) {
+            list = new ArrayList<>();
+            for (int i : ball) {
+                list.add(i);
+            }
+        }
+
+        public boolean peek(int i){
+            if(list.isEmpty())
+                return false;
+
+            return list.get(0) == i
+                    || list.get(list.size() - 1) == i;
+        }
+
+        public int pop(int i){
+            if(list.get(0) == i)
+                list.remove(0);
+            else if(list.get(list.size()-1) == i)
+                list.remove(list.size()-1);
+            return i;
+        }
+    }
+}

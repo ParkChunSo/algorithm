@@ -1,0 +1,79 @@
+import java.util.StringTokenizer;
+class Solution {
+    public String solution(String new_id) {
+        new_id = firstFilter(new_id);
+        new_id = secondFilter(new_id);
+        new_id = thirdNFourthFilter(new_id);
+        if(new_id.equals(""))
+            new_id = "a";
+
+        if(new_id.length() > 15)
+            new_id = sixthFilter(new_id);
+        else if(new_id.length() <3){
+            new_id = seventhFilter(new_id);
+        }
+        return new_id;
+    }
+
+    private String firstFilter(String id) {
+        return id.toLowerCase();
+    }
+
+    private String secondFilter(String id) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < id.length(); i++) {
+            if (isLowerCase(id.charAt(i))
+                    || isNumber(id.charAt(i))
+                    || isPermitChar(id.charAt(i))){
+                sb.append(id.charAt(i));
+            }
+        }
+        return sb.toString();
+    }
+
+    private boolean isLowerCase(char c){
+        return c >= 'a' && c <= 'z';
+    }
+
+    private boolean isNumber(char c){
+        return c >= '0' && c <= '9';
+    }
+
+    private boolean isPermitChar(char c){
+        return c == '-'
+                || c == '_'
+                || c == '.';
+    }
+
+    private String thirdNFourthFilter(String id){
+        StringBuilder sb = new StringBuilder();
+        StringTokenizer st = new StringTokenizer(id, ".");
+        if(st.hasMoreTokens())
+            sb.append(st.nextToken());
+
+        while(st.hasMoreTokens()){
+            String s = st.nextToken();
+            if(s.equals(""))
+                continue;
+            sb.append(".").append(s);
+        }
+        return sb.toString();
+    }
+
+    private String sixthFilter(String id){
+        StringBuilder sb = new StringBuilder(id.substring(0, 15));
+
+        if(sb.charAt(sb.length()-1) == '.')
+            sb.deleteCharAt(sb.length()-1);
+
+        return sb.toString();
+    }
+    private String seventhFilter(String id){
+        StringBuilder sb = new StringBuilder(id);
+        char c = sb.charAt(sb.length()-1);
+        while(sb.length() < 3){
+            sb.append(c);
+        }
+        return sb.toString();
+    }
+}
