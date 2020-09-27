@@ -1,0 +1,55 @@
+package com.company;
+
+import java.util.*;
+
+class Solution {
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String[] genres = {"classic", "pop", "classic", "classic", "pop"};
+        int[] plays = {500, 600, 150, 800, 2500};
+
+        int[][] blocks = {{0, 92}, {1, 20}, {2, 11}, {1, -81}, {3, 98}};
+//        int[][] blocks = {{0, 50}, {0, 22}, {2, 10}, {1, 4}, {4, -13}};
+        int[][] t2 = {{1, 2}, {-1, -1}, {-1, -1}};
+
+        int[][] edges = {{0, 1}, {0, 2}, {0, 3}, {1, 4}, {1, 5}, {2, 6}, {3, 7}
+        , {3, 8}, {3, 9}, {4, 10}, {4, 11}, {5, 12}, {5, 13}, {6, 14}, {6, 15}, {6, 16}, {8, 17}, {8, 18}};
+
+//        int[][] edge2 = {{0, 1}, {0, 2}, {1, 3}, {1, 4}, {2, 5}, {2, 6}, {2, 7}, {3, 8}, {3, 9}, {3, 10}, {4, 11}, {4, 12}, {4, 13}};
+        int[][] e = {{0, 1}, {0, 2}, {1, 3}, {2, 4}, {2, 5}, {2, 6}, {3, 7}, {3, 8}, {3, 9}};
+        System.out.println(solution.solution(19, edges));
+//        System.out.println(Arrays.toString(solution.solution(blocks)));
+    }
+
+    List<List<Integer>> linked = new ArrayList<>();
+    public int solution(int n, int[][] edge) {
+        for(int i = 0 ; i < n ; i++){
+            linked.add(new ArrayList<>());
+        }
+        for(int[] e : edge){
+            linked.get(e[0]).add(e[1]);
+        }
+
+        return dfs(linked.get(0)) + 1;
+    }
+
+    public int dfs(List<Integer> list){
+        if(list.isEmpty()) {
+            return 0;
+        }
+
+        int v = list.size() - 1;
+        int answer = Integer.MAX_VALUE;
+        for(int i = 0 ; i < list.size() ; i++){
+            List<Integer> next = new ArrayList<>();
+            for(int j = 0 ; j < list.size() ; j++){
+                if(j == i)
+                    continue;
+                next.addAll(linked.get(list.get(j)));
+            }
+            answer = Math.min(answer, dfs(next) + v);
+        }
+        return answer;
+    }
+}

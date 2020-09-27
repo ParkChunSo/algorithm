@@ -1,0 +1,90 @@
+import java.util.*;
+class Solution {
+    public int solution(int[][] t1, int[][] t2) {
+        Tree tree1 = new Tree(0, t1[0][0], t1[0][1]);
+        Tree tree2 = new Tree(0, t2[0][0], t2[0][1]);
+
+        for (int i = 1; i < t1.length; i++) {
+            tree1.add(i, t1[i][0], t1[i][1]);
+        }
+        for (int i = 1; i < t2.length; i++) {
+            tree2.add(i, t2[i][0], t2[i][1]);
+        }
+
+        int answer = 0;
+        Queue<Node> queue = new LinkedList<>();
+        queue.offer(tree1.root);
+        while(!queue.isEmpty()){
+            Node poll = queue.poll();
+            if(isSame(poll, tree2.root))
+                answer++;
+
+            if(poll.right != null)
+                queue.offer(poll.right);
+            if(poll.left != null)
+                queue.offer(poll.left);
+        }
+
+        return answer;
+    }
+
+    public boolean isSame(Node t1, Node t2) {
+        if ((t1.left != null && t2.left == null)
+                || (t1.left == null && t2.left != null)
+                || (t1.right != null && t2.right == null)
+                || (t1.right == null && t2.right != null))
+            return false;
+
+
+        boolean leftAnswer = true, rightAnswer = true;
+        if((t1.left != null && t2.left != null)){
+            leftAnswer = isSame(t1.left, t2.left);
+        }
+        if(t1.right != null && t2.right != null){
+            rightAnswer = isSame(t1.right, t2.right);
+        }
+        return leftAnswer && rightAnswer;
+    }
+
+    public class Tree {
+        Node root;
+
+        public Tree(int data, int left, int right) {
+            this.root = new Node(data);
+            if (left != -1)
+                this.root.left = new Node(left);
+            if (right != -1)
+                this.root.right = new Node(right);
+        }
+
+        public void add(int data, int left, int right) {
+            next(root.left, data, left, right);
+            next(root.right, data, left, right);
+        }
+
+        public void next(Node node, int data, int left, int right) {
+            if (node == null)
+                return;
+
+            if (node.data == data) {
+                if (left != -1)
+                    node.left = new Node(left);
+                if (right != -1)
+                    node.right = new Node(right);
+            } else {
+                next(node.left, data, left, right);
+                next(node.right, data, left, right);
+            }
+        }
+    }
+
+    public class Node {
+        int data;
+        Node left;
+        Node right;
+
+        public Node(int data) {
+            this.data = data;
+        }
+    }
+}

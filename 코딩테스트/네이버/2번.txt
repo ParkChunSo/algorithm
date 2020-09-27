@@ -1,0 +1,74 @@
+package com.company;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
+
+class Solution {
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String[] genres = {"classic", "pop", "classic", "classic", "pop"};
+        int[] plays = {500, 600, 150, 800, 2500};
+
+        int[][] blocks = {{0, 92}, {1, 20}, {2, 11}, {1, -81}, {3, 98}};
+//        int[][] blocks = {{0, 50}, {0, 22}, {2, 10}, {1, 4}, {4, -13}};
+        int[][] t2 = {{1, 2}, {-1, -1}, {-1, -1}};
+
+        System.out.println(Arrays.toString(solution.solution(blocks)));
+    }
+
+    public int[] solution(int[][] blocks) {
+        int length = blocks.length;
+        int[][] map = new int[length][length];
+        for(int i = 0 ; i < length ; i++) {
+            Arrays.fill(map[i], 101);
+        }
+        for(int i = 0 ; i < length ; i++){
+            map[i][blocks[i][0]] = blocks[i][1];
+        }
+
+        Queue<Pair> queue = new LinkedList<>();
+        for(int i = 0 ; i < length-1 ; i++){
+            //queue 세팅
+            for(int k = 0 ; k <= i ; k++){
+                queue.offer(new Pair(i, k));
+            }
+
+            //아래 둘중 하나라도 있는경우(답을 구할 수 있으면) 실행 아님 큐에 넣기
+            while(!queue.isEmpty()){
+                Pair poll = queue.poll();
+                if(map[poll.y+1][poll.x] == 101 && map[poll.y+1][poll.x+1] == 101){
+                    queue.offer(poll);
+                    continue;
+                }
+
+                if(map[poll.y+1][poll.x] == 101){
+                    map[poll.y+1][poll.x] = map[poll.y][poll.x] - map[poll.y+1][poll.x+1];
+                }else{
+                    map[poll.y+1][poll.x+1] = map[poll.y][poll.x] - map[poll.y+1][poll.x];
+                }
+            }
+        }
+
+        int[] answer = new int[(length * (length+1))/2];
+        int idx = 0;
+        for(int i = 0 ; i < length ; i++){
+            for(int k = 0 ; k <= i ; k++){
+                answer[idx] = map[i][k];
+                idx++;
+            }
+        }
+        return answer;
+    }
+
+    public class Pair {
+        int y;
+        int x;
+
+        public Pair(int y, int x) {
+            this.y = y;
+            this.x = x;
+        }
+    }
+}
