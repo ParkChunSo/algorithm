@@ -1,0 +1,78 @@
+package com.company;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        Main main = new Main();
+//        int solution = main.solution(N, edges);
+//        System.out.println(solution);
+//        int numOfAllPlayers =  6;
+//        int numOfQuickPlayers = 2;
+//        char[] namesOfQuickPlayers = {'B', 'C'};
+//        int numOfGames = 2;
+//        int[] numOfMovesPerGame = {3, -2};
+        int numOfAllPlayers =  17;
+        int numOfQuickPlayers = 5;
+        char[] namesOfQuickPlayers = {'B', 'D', 'I', 'M', 'P'};
+        int numOfGames = 11;
+        int[] numOfMovesPerGame = {3, -4, 5, 6, -7, -8, 10, -12, -15, -20, 23};
+        solution(numOfAllPlayers, numOfQuickPlayers, namesOfQuickPlayers, numOfGames, numOfMovesPerGame);
+    }
+
+    private static void solution(int numOfAllPlayers, int numOfQuickPlayers
+            , char[] namesOfQuickPlayers, int numOfGames, int[] numOfMovesPerGame){
+        char[] location = new char[numOfAllPlayers-1];
+        int[] cnt = new int[numOfAllPlayers];
+
+        for(int i = 0 ; i < numOfAllPlayers-1 ; i++){
+            location[i] = (char)('B' + i);
+        }
+        char tagger = 'A';
+        int taggerLocation = 0;
+        for(int num : numOfMovesPerGame){
+            cnt[tagger - 'A']++;
+            taggerLocation = num < 0 ? negativeMove(taggerLocation, num, numOfAllPlayers)
+                    : positiveMove(taggerLocation, num, numOfAllPlayers);
+            if(contains(namesOfQuickPlayers, location[taggerLocation])){
+                continue;
+            }
+            char tmp = location[taggerLocation];
+            location[taggerLocation] = tagger;
+            tagger = tmp;
+        }
+        cnt[tagger - 'A']++;
+
+        for(int i = 0 ; i < numOfAllPlayers-1 ; i++){
+            System.out.println(location[i] + " " + cnt[location[i] - 'A']);
+        }
+        System.out.println(tagger + " " + cnt[tagger - 'A']);
+    }
+    private static boolean contains(char[] namesOfQuickPlayers, char player){
+        for (char namesOfQuickPlayer : namesOfQuickPlayers) {
+            if (namesOfQuickPlayer == player)
+                return true;
+        }
+        return false;
+    }
+
+    private static int positiveMove(int taggerLocation, int num, int numOfAllPlayers){
+        for(int i = 0 ; i < num ; i++){
+            taggerLocation += 1;
+            if(taggerLocation == numOfAllPlayers-1)
+                taggerLocation = 0;
+        }
+        return taggerLocation;
+    }
+    private static int negativeMove(int taggerLocation, int num, int numOfAllPlayers){
+        for(int i = 0 ; i > num ; i--){
+            taggerLocation -= 1;
+            if(taggerLocation == -1)
+                taggerLocation = numOfAllPlayers-2;
+        }
+        return taggerLocation;
+    }
+}

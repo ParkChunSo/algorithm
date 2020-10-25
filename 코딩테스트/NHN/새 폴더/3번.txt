@@ -1,0 +1,102 @@
+package com.company;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        String[] arr = {"B2(RG)", "3(R2(GB))"};
+        solution(2, arr);
+    }
+    static String order;
+    private static void solution(int numOfOrder, String[] orderArr) {
+        for(String o : orderArr){
+           order = o;
+            System.out.println(method());
+        }
+    }
+
+    private static String method(){
+        int leftCnt = 0;
+        StringBuilder sb = new StringBuilder();
+        Stack<Character> stack = new Stack<>();
+        Stack<String> waitingStack = new Stack<>();
+        for(int i = 0 ; i < order.length() ; i++){
+            if(order.charAt(i) == ')'){
+                waitingStack.push(process(stack));
+                leftCnt--;
+                if(leftCnt == 0) {
+                    sb.append(popStack(stack));
+                    sb.append(concat(waitingStack));
+                }
+                continue;
+            }else if(order.charAt(i) == '('){
+                leftCnt++;
+            }
+
+            stack.push(order.charAt(i));
+        }
+        return sb.toString();
+    }
+
+    private static String popStack(Stack<Character> stack){
+        StringBuilder sb = new StringBuilder();
+        Stack<Character> s = new Stack<>();
+        while(!stack.isEmpty())
+            s.push(stack.pop());
+        while(!s.isEmpty())
+            sb.append(s.pop());
+        return sb.toString();
+    }
+    private static String concat(Stack<String> stack){
+        StringBuilder sb = new StringBuilder();
+        while(!stack.isEmpty()){
+            sb.append(stack.pop());
+        }
+        return sb.toString();
+    }
+
+    private static String process(Stack<Character> stack){
+        Stack<Character> tmp = new Stack<>();
+        while(true){
+            char pop = stack.pop();
+            if(pop > '0' && pop < '9'){
+                for(int i = 0 ; i < pop-'1' ; i++){
+                    tmp.push(tmp.peek());
+                }
+            }
+            else if(pop == '('){
+                char nextPop = stack.pop();
+                if(nextPop > '0' && nextPop < '9'){
+                    return rulesOfNum(tmp, nextPop - '0');
+                }else{
+                    return rulesOfRGB(tmp, nextPop);
+                }
+            }else{
+                tmp.push(pop);
+            }
+        }
+    }
+
+    private static String rulesOfRGB(Stack<Character> stack, char c){
+        StringBuilder sb = new StringBuilder();
+        while(!stack.isEmpty()){
+            sb.append(c);
+            sb.append(stack.pop());
+        }
+        return sb.toString();
+    }
+
+    private static String rulesOfNum(Stack<Character> stack, int n){
+        StringBuilder sb = new StringBuilder();
+        while(!stack.isEmpty()){
+            sb.append(stack.pop());
+        }
+        String s = sb.toString();
+        sb.append(s.repeat(Math.max(0, n - 1)));
+        return sb.toString();
+    }
+
+}
