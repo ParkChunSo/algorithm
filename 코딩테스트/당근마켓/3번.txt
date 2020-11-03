@@ -1,0 +1,71 @@
+package com.company;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.*;
+
+class Solution {
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[][] v = {{0,0,1,1},{1,1,1,1},{2,2,2,1},{0,0,0,2}};
+        System.out.println(Arrays.toString(solution.solution(v)));
+    }
+
+    int[] dy = {-1, 1, 0, 0};
+    int[] dx = {0, 0, -1, 1};
+
+    int[][] map;
+    boolean[][] visited;
+    int N, M;
+    public int[] solution(int[][] v) {
+        map = v;
+        visited = new boolean[map.length][map[0].length];
+        N = map.length;
+        M = map[0].length;
+        int[] result = new int[3];
+
+        for(int y = 0 ; y < map.length ; y++){
+            for(int x = 0 ; x < map[0].length ; x++){
+                if(visited[y][x]){
+                    continue;
+                }
+                marking(y, x);
+                result[map[y][x]]++;
+            }
+        }
+        return result;
+    }
+
+    private void marking(int y, int x){
+        Queue<Pair> queue = new LinkedList<>();
+        queue.offer(new Pair(y, x));
+        visited[y][x] = true;
+        while(!queue.isEmpty()){
+            Pair pair = queue.poll();
+            for(int i = 0 ; i < dy.length ; i++){
+                int _y = pair.y + dy[i];
+                int _x = pair.x + dx[i];
+                if(checkValidXY(_y, _x, map[y][x])){
+                    visited[_y][_x] = true;
+                    queue.offer(new Pair(_y, _x));
+                }
+            }
+        }
+    }
+    private boolean checkValidXY(int y, int x, int val){
+        return y < N && y >=0
+                && x < M && x >= 0
+                && !visited[y][x]
+                && map[y][x] == val;
+    }
+    public class Pair {
+        int x;
+        int y;
+
+        Pair(int y, int x) {
+            this.y = y;
+            this.x = x;
+        }
+    }
+}

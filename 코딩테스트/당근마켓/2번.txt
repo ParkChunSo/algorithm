@@ -1,0 +1,63 @@
+package com.company;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.*;
+
+class Solution {
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String txt = "a";
+        String key = "a";
+//        String txt = "qyyigoptvfb";
+//        String key = "abcdefghijk";
+        int rotation = 0;
+        String encrypt = solution.solution(txt, key, rotation);
+        System.out.println(encrypt);
+    }
+
+    public String solution(String encrypted_text, String key, int rotation) {
+        String rotate = rotate(encrypted_text, rotation);
+        return decryption(rotate, key);
+    }
+
+    private String decryption(String text, String key) {
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0 ; i < text.length() ; i++){
+            int v1 = text.charAt(i) - 'a';
+            int v2 = key.charAt(i) - 'a' + 1;
+            char c;
+            if(v1 - v2 >= 0)
+                c = (char)(v1 - v2 + 'a');
+            else
+                c = (char)(26 + (v1 - v2 + 'a'));
+            sb.append(c);
+        }
+        return sb.toString();
+    }
+
+    private String rotate(String text, int rotation){
+        StringBuilder sb = new StringBuilder();
+        int idx = rotation != 0 ? getStartIdx(text, rotation) : 0;
+        int i = idx;
+        while(true){
+            sb.append(text.charAt(i));
+            i++;
+            if(i == text.length())
+                i = 0;
+            if(i == idx)
+                break;
+        }
+        return sb.toString();
+    }
+
+    private int getStartIdx(String text, int rotation){
+        if(rotation < 0){
+            int v = text.length() - (rotation % text.length());
+            return v % text.length();
+        }else {
+            return Math.abs(rotation) % text.length();
+        }
+    }
+}

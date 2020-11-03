@@ -1,0 +1,91 @@
+package com.company;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.*;
+
+class Solution {
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int n = 7;
+        int[][] d = {{5,6,0},{1,3,1},{1,5,0},{7,6,0},{3,7,1},{2,5,0}};
+        System.out.println(solution.solution(n, d));
+    }
+
+    final int EMPTY = 0,YES = 1, NO = 2, QUESTION = 3;
+    int[] result;
+    public String solution(int n, int[][] delivery) {
+        result = new int[n+1];
+
+        Queue<Delivery> queue = new LinkedList<>();
+        //배송여부가 1인것 삭제
+        for(int[] arr : delivery){
+            if(arr[2] == 0) {
+                queue.offer(new Delivery(arr[0], arr[1], arr[2]));
+                continue;
+            }
+            result[arr[0]] = YES;
+            result[arr[1]] = YES;
+        }
+
+        int size;
+        while(!queue.isEmpty()){
+            size = queue.size();
+            for(int i = 0 ; i < size ; i++){
+                Delivery poll = queue.poll();
+                if(result[poll.v1] == EMPTY && result[poll.v2] == EMPTY) {
+                    queue.offer(poll);
+                } else if(result[poll.v1] == EMPTY && result[poll.v2] == YES){
+                    result[poll.v1] = NO;
+                }else if(result[poll.v1] == YES && result[poll.v2] == EMPTY){
+                    result[poll.v2] = NO;
+                }else if(result[poll.v1] == EMPTY && result[poll.v2] == NO){
+                    result[poll.v1] = QUESTION;
+                }else if(result[poll.v1] == NO && result[poll.v2] == EMPTY){
+                    result[poll.v2] = QUESTION;
+                }else if(result[poll.v1] == EMPTY && result[poll.v2] == QUESTION){
+                    result[poll.v2] = QUESTION;
+                }else if(result[poll.v1] == QUESTION && result[poll.v2] == EMPTY){
+                    result[poll.v2] = QUESTION;
+                }
+            }
+            if(queue.size() == size){
+                post(queue);
+                break;
+            }
+        }
+        return result();
+    }
+
+    private void post(Queue<Delivery> queue){
+        while(!queue.isEmpty()){
+            Delivery poll = queue.poll();
+            result[poll.v1] = QUESTION;
+            result[poll.v2] = QUESTION;
+        }
+    }
+
+    private String result(){
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1 ; i < result.length ; i++) {
+            if (result[i] == YES)
+                sb.append('o');
+            else if (result[i] == NO)
+                sb.append('x');
+            else
+                sb.append('?');
+        }
+        return sb.toString();
+    }
+
+    class Delivery{
+        int v1, v2, q;
+
+        public Delivery(int v1, int v2, int q) {
+            this.v1 = v1;
+            this.v2 = v2;
+            this.q = q;
+        }
+    }
+}
